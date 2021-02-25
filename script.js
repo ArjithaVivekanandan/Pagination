@@ -1,5 +1,6 @@
-
 var itemCount=prompt("Enter Items per page");
+var pageData,tableData;
+var init=0;
 
 if(itemCount==null||itemCount<=0)
 {
@@ -8,89 +9,120 @@ document.body.append(itemCount);
 }
 else{
 
-var pageData,tableData;
 var pagerequestData = new XMLHttpRequest();
 pagerequestData.open("GET", "https://raw.githubusercontent.com/Rajavasanthan/jsondata/master/pagenation.json", true);
 pagerequestData.send();
 pagerequestData.onload = function()
 {
-     pageData =JSON.parse(this.response);
-
-       tableData=document.createElement("table");
-      tableData.setAttribute("style","width:50%;border:1px solid black;border-collapse:collapse")
-      var firstRow=document.createElement("tr")
-      var serialHead=document.createElement("th")
-      serialHead.setAttribute("style","color:Purple;width:2%;border:1px solid black;border-collapse:collapse")
-      serialHead.innerHTML="S.No";
-
-      var nameHead=document.createElement("th")
-      nameHead.setAttribute("style","color:Purple;width:30%;border:1px solid black;border-collapse:collapse")
-      nameHead.innerHTML="Name";
-
-      var emailHead=document.createElement("th")
-      emailHead.setAttribute("style","color:Purple;width:%;border:1px solid black;border-collapse:collapse")
-      emailHead.innerHTML="Email";
-
-      firstRow.append(serialHead,nameHead,emailHead);
-      tableData.append(firstRow);
-      document.body.append(tableData);
-      
-      displayPagedata();
-      var breakspace=document.createElement("br");
-      var pagination=document.createElement("div");
-    
-      var firstButton = document.createElement("button");
-      firstButton.innerHTML ="First";
-      firstButton.onclick="displayPagedata()";
-
-      var previousButton=document.createElement("button");
-      previousButton.innerHTML ="Previous";
-      previousButton.onclick="displayPagedata()";
-
-      var second=document.createElement("button");
-      second.innerHTML ="2";
-      second.onclick="displayPagedata()";
-
-      var third=document.createElement("button");
-      third.innerHTML ="3";
-      third.onclick="displayPagedata()";
-
-      var nextButton=document.createElement("button");
-      nextButton.innerHTML ="Next";
-      nextButton.onclick="displayPagedata()";
-
-      pagination.append(firstButton,previousButton,second,third,nextButton);
-      document.body.append(breakspace,pagination);
-    
+     pageData =JSON.parse(pagerequestData.response);
+         
+     generateData(itemCount,0);
+     generateButtons();
+     
 }
-  function displayPagedata(){
-    let counter=1;
-    for(var d in pageData)
+}
+var container=document.createElement("div");
+container.setAttribute("class","container");
+
+var title=document.createElement("h1");
+title.setAttribute("class","text-warning text-center");
+title.innerHTML="Pagination";
+
+tableData=document.createElement("table");
+tableData.setAttribute("style","width:100%");
+tableData.setAttribute("class","table table-bordered");
+
+
+var buttonRow=document.createElement("div");
+buttonRow.setAttribute("class"," buttonCollection btn-group-sm");
+
+container.append(title,tableData,buttonRow);
+document.body.append(container);       
+
+  function generateData(itemCount,pageNumber)
+  {
+    tableData.innerHTML="";
+    var start=pageNumber*itemCount;
+    var end=(start+ +itemCount);
+
+    var firstRow=document.createElement("tr")
+    var serialHead=document.createElement("th")
+    serialHead.setAttribute("style","width:2%")
+    serialHead.setAttribute("class","text-danger")
+    serialHead.innerHTML="S.No";
+
+    var nameHead=document.createElement("th")
+    nameHead.setAttribute("style","width:30%")
+    nameHead.setAttribute("class","text-danger")
+    nameHead.innerHTML="Name";
+
+    var emailHead=document.createElement("th")
+    emailHead.setAttribute("style","width:68%")
+    emailHead.setAttribute("class","text-danger")
+    emailHead.innerHTML="Email";
+
+    firstRow.append(serialHead,nameHead,emailHead);
+    tableData.append(firstRow);
+   
+    for(var d=start;d<end;d++)
     {
       
-      if(counter<=itemCount)
-      { 
-        var tablerow=document.createElement("tr");
+      var tablerow=document.createElement("tr");
 
       var serialData=document.createElement('td');
-      serialData.setAttribute("style","color:blue;width:2%;border:1px solid black;border-collapse:collapse")
+      serialData.setAttribute("style","width:2%")
+      serialData.setAttribute("class","text-success small");
       serialData.innerHTML=pageData[d].id;
 
       var nameData=document.createElement('td');
-      nameData.setAttribute("style","color:blue;width:30%;border:1px solid black;border-collapse:collapse")
+      nameData.setAttribute("style","width:30%")
+      nameData.setAttribute("class","text-success small");
       nameData.innerHTML=pageData[d].name;
 
-      var mailData1=document.createElement('td');
-      mailData1.setAttribute("style","color:blue;width:68%;border:1px solid black;border-collapse:collapse")
-      mailData1.innerHTML=pageData[d].email;
+      var mailData=document.createElement('td');
+      mailData.setAttribute("style","width:68%")
+      mailData.setAttribute("class","text-success small");
+      mailData.innerHTML=pageData[d].email;
     
     
-      tablerow.append(serialData,nameData,mailData1)
+      tablerow.append(serialData,nameData,mailData)   
       tableData.append(tablerow);
-      document.body.append(tableData);
-      counter++;
-      }
-    
     }
   }
-}
+
+
+  function generateButtons(){
+
+    
+      var buttonCount=parseInt(100/(itemCount));
+      if(100 % itemCount!=0)
+      buttonCount++;
+
+      for(let i=1;i<=buttonCount;i++){
+        
+        var button=document.createElement("button");
+        button.setAttribute('class', 'btn btn-outline-primary');
+        button.innerHTML=i;
+        
+          if(i==1){
+          
+          button.innerHTML="First";
+          button.setAttribute('class', 'btn btn-outline-primary active');
+        }
+         if(i==buttonCount)
+        {
+          button.innerHTML="Last";
+        }
+         document.body.append(button);
+         button.onclick=(event)=>{
+          generateData(itemCount,i-1)
+  
+          var currentActive = document.getElementsByClassName("active");
+              currentActive[0].className = currentActive[0].className.replace(" active", "");
+              
+    
+              event.target.className += " active";
+          };
+          buttonRow.append(button);
+      }
+    }
