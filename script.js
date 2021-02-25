@@ -20,7 +20,7 @@ pagerequestData.onload = function()
      generateButtons();
      
 }
-}
+
 var container=document.createElement("div");
 container.setAttribute("class","container");
 
@@ -124,5 +124,6 @@ document.body.append(container);
               event.target.className += " active";
           };
           buttonRow.append(button);
+      }
       }
     }
