@@ -65,7 +65,7 @@ else
   {
     
     tableData.innerHTML="";
-    
+    buttonRow.innerHTML="";
     var start=pageNumber*itemCount;
     var end=(start+ +itemCount);
 
