@@ -1,14 +1,46 @@
-var itemCount=prompt("Enter Items per page");
+var itemCount;
 var pageData,tableData;
 var init=0;
+var container=document.createElement("div");
+container.setAttribute("class","container");
+container.setAttribute("style","font-family: 'Akaya Telivigala', cursive;")
 
-if(itemCount==null||itemCount<=0)
-{
-itemCount="Invalid input";
-document.body.append(itemCount);
+var title=document.createElement("h1");
+title.setAttribute("class","text-danger text-center");
+title.innerHTML="Pagination";
+
+var introMsg =document.createElement("div")
+introMsg.setAttribute("class","text-primary");
+introMsg.innerHTML="How many items per page needs to be displayed?"
+
+var inputfield=document.createElement("input");
+inputfield.setAttribute("type","text");
+inputfield.setAttribute("class","text-muted")
+
+var errorMsg =document.createElement("div")
+errorMsg.setAttribute("class","text-danger");
+
+
+tableData=document.createElement("table");
+tableData.setAttribute("class","table table-dark");
+
+
+var buttonRow=document.createElement("div");
+buttonRow.setAttribute("class"," buttonCollection btn-group-sm");
+
+container.append(title,introMsg,inputfield,errorMsg,tableData,buttonRow);
+document.body.append(container);  
+
+inputfield.onkeyup=(e)=>{
+  
+itemCount=e.target.value;
+  workingME(itemCount);
 }
-else{
 
+function workingME(itemCount)
+{
+ if(itemCount>0){
+errorMsg.innerHTML="";
 var pagerequestData = new XMLHttpRequest();
 pagerequestData.open("GET", "https://raw.githubusercontent.com/Rajavasanthan/jsondata/master/pagenation.json", true);
 pagerequestData.send();
@@ -20,45 +52,35 @@ pagerequestData.onload = function()
      generateButtons();
      
 }
-
-var container=document.createElement("div");
-container.setAttribute("class","container");
-
-var title=document.createElement("h1");
-title.setAttribute("class","text-warning text-center");
-title.innerHTML="Pagination";
-
-tableData=document.createElement("table");
-tableData.setAttribute("style","width:100%");
-tableData.setAttribute("class","table table-bordered");
-
-
-var buttonRow=document.createElement("div");
-buttonRow.setAttribute("class"," buttonCollection btn-group-sm");
-
-container.append(title,tableData,buttonRow);
-document.body.append(container);       
-
-  function generateData(itemCount,pageNumber)
+}
+else
   {
     tableData.innerHTML="";
+    buttonRow.innerHTML="";
+    errorMsg.innerHTML="Please provide valid Input!!!";
+    
+  }
+   
+  function generateData(itemCount,pageNumber)
+  {
+    
+    tableData.innerHTML="";
+    
     var start=pageNumber*itemCount;
     var end=(start+ +itemCount);
 
     var firstRow=document.createElement("tr")
     var serialHead=document.createElement("th")
-    serialHead.setAttribute("style","width:2%")
-    serialHead.setAttribute("class","text-danger")
+  
+    serialHead.setAttribute("class","text-warning")
     serialHead.innerHTML="S.No";
 
     var nameHead=document.createElement("th")
-    nameHead.setAttribute("style","width:30%")
-    nameHead.setAttribute("class","text-danger")
+    nameHead.setAttribute("class","text-warning")
     nameHead.innerHTML="Name";
 
     var emailHead=document.createElement("th")
-    emailHead.setAttribute("style","width:68%")
-    emailHead.setAttribute("class","text-danger")
+    emailHead.setAttribute("class","text-warning")
     emailHead.innerHTML="Email";
 
     firstRow.append(serialHead,nameHead,emailHead);
@@ -70,18 +92,15 @@ document.body.append(container);
       var tablerow=document.createElement("tr");
 
       var serialData=document.createElement('td');
-      serialData.setAttribute("style","width:2%")
-      serialData.setAttribute("class","text-success small");
+      serialData.setAttribute("class","text-white small");
       serialData.innerHTML=pageData[d].id;
 
       var nameData=document.createElement('td');
-      nameData.setAttribute("style","width:30%")
-      nameData.setAttribute("class","text-success small");
+      nameData.setAttribute("class","text-white small");
       nameData.innerHTML=pageData[d].name;
 
       var mailData=document.createElement('td');
-      mailData.setAttribute("style","width:68%")
-      mailData.setAttribute("class","text-success small");
+      mailData.setAttribute("class","text-white small");
       mailData.innerHTML=pageData[d].email;
     
     
@@ -91,41 +110,41 @@ document.body.append(container);
   }
 
 
-  function generateButtons(){
+  function generateButtons()
+  {
 
-    
       var buttonCount=parseInt(100/(itemCount));
       if(100 % itemCount!=0)
       buttonCount++;
 
-      for(let i=1;i<=buttonCount;i++){
+        for(let i=1;i<=buttonCount;i++)
+        {
+      
+          var button=document.createElement("button");
+          button.setAttribute('class', 'btn btn-outline-primary');
+          button.innerHTML=i;
         
-        var button=document.createElement("button");
-        button.setAttribute('class', 'btn btn-outline-primary');
-        button.innerHTML=i;
-        
-          if(i==1){
+          if(i==1)
+          {
           
           button.innerHTML="First";
           button.setAttribute('class', 'btn btn-outline-primary active');
-        }
-         if(i==buttonCount)
-        {
+          }
+          if(i==buttonCount)
+          {
           button.innerHTML="Last";
-        }
-         document.body.append(button);
-         button.onclick=(event)=>{
+          }
+          document.body.append(button);
+          button.onclick=(event)=>
+          {
           generateData(itemCount,i-1)
   
           var currentActive = document.getElementsByClassName("active");
-              currentActive[0].className = currentActive[0].className.replace(" active", "");
-              
-    
-              event.target.className += " active";
+          currentActive[0].className = currentActive[0].className.replace(" active", "");
+          event.target.className += " active";
           };
           buttonRow.append(button);
-      }
+        }
         
-    }
-     
-    }
+  }
+}
