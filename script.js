@@ -112,7 +112,7 @@ else
 
   function generateButtons()
   {
-
+    buttonRow.innerHTML="";
       var buttonCount=parseInt(100/(itemCount));
       if(100 % itemCount!=0)
       buttonCount++;
