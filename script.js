@@ -3,7 +3,7 @@ var pageData,tableData;
 var init=0;
 var container=document.createElement("div");
 container.setAttribute("class","container");
-container.setAttribute("style","font-family: 'Akaya Telivigala', cursive;")
+
 
 var title=document.createElement("h1");
 title.setAttribute("class","text-danger text-center");
@@ -65,7 +65,7 @@ else
   {
     
     tableData.innerHTML="";
-    buttonRow.innerHTML="";
+   
     var start=pageNumber*itemCount;
     var end=(start+ +itemCount);
 
